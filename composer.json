@@ -7,7 +7,8 @@
     "authors": [
         {
             "name": "Anatolii Pipko",
-            "email": "videoller@gmail.com"
+            "email": "videoller@gmail.com",
+            "role": "Developer"
         }
     ],
     "require": {
@@ -15,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "tolik505\\tree\\": ""
+            "tolik505\\tree\\": "src"
         }
     }
 }

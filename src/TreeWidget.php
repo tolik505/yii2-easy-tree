@@ -9,19 +9,11 @@ use yii\helpers\Html;
 use yii\helpers\Json;
 
 /**
- * Tree widget based on Fancytree extension {@link http://wwwendt.de/tech/fancytree/demo/#sample-default.html)
- *
- * Class Tree
- * @package app\widgets\tree
+ * Class TreeWidget
+ * @package tolik505\tree
  */
-class Tree extends Widget
+class TreeWidget extends Widget
 {
-    const THEME_LION = 'skin-lion';
-    const THEME_WIN7 = 'skin-win7';
-    const THEME_WIN8 = 'skin-win8';
-    const THEME_XP = 'skin-xp';
-    
-    
     /**
      * List of categories
      * @var
