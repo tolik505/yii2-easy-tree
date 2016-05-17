@@ -47,7 +47,7 @@ class TreeWidget extends Widget
      */
     public function run()
     {
-        $this->options['source'] = $this->items;
+        $this->options['data'] = $this->prepareItems();
         echo Html::tag('div', '', ['id' => $this->id]);
         $this->registerAssets();
     }
@@ -71,4 +71,28 @@ class TreeWidget extends Widget
     {
         return Json::encode($this->options);
     }
+
+    /**
+     * @return array
+     */
+    function prepareItems()
+    {
+        $items = $this->items;
+        $u = null;
+        $markAsFolder = function(&$item, $key, $u) {
+            if (empty($item['url']) && is_array($item)) {
+                if (isset($item['label'])) {
+                    $item['isFolder'] = true;
+                }
+                if (!empty($item['items']) && $u) {
+                    array_walk($item['items'], $u, $u);
+                }
+            }
+        };
+        array_walk($items, $markAsFolder, $markAsFolder);
+
+        return $items;
+    }
+
+
 }

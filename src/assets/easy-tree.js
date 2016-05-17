@@ -9,19 +9,19 @@
 
 	/* Example node */
 	// var node = {}
-	// node.children = [];
+	// node.items = [];
 	// node.isActive = false;
 	// node.isFolder = false;
 	// node.isExpanded = false;
 	// node.isLazy = false;
 	// node.iconUrl = '';
 	// node.id = '';
-	// node.href = '';
+	// node.url = '';
 	// node.hrefTarget = '';
 	// node.lazyUrl = '';
 	// node.lazyUrlJson = '';
 	// node.liClass = '';
-	// node.text = '';
+	// node.label = '';
 	// node.textCss = '';
 	// node.tooltip = '';
 	// node.uiIcon = '';
@@ -127,11 +127,11 @@
 				return;
 			}
 
-			if (!targetNode.children) {
-				targetNode.children = [];
+			if (!targetNode.items) {
+				targetNode.items = [];
 			}
 
-			targetNode.children.push(sourceNode);
+			targetNode.items.push(sourceNode);
 		};
 		this.removeNode = function (id) {
 			removeNode(_nodes, id);
@@ -213,7 +213,7 @@
 			}
 
 			if (node.isLazy && !node.isExpanded) { // if opening a lazy node 
-				var hasChildren = node.children && node.children.length > 0;
+				var hasChildren = node.items && node.items.length > 0;
 				ret = true;
 				if (_settings.openLazyNode) { // fire openLazyNode event
 					ret = _settings.openLazyNode(event, nodes, node, hasChildren);
@@ -226,11 +226,11 @@
 
 						var json = convertInputDataToJson(data);
 						if ($.isArray(json)) {
-							node.children = json;
+							node.items = json;
 						}
 						else {
-							node.children = [];
-							node.children.push(json);
+							node.items = [];
+							node.items.push(json);
 						}
 
 						buildTree(nodes);
@@ -328,8 +328,8 @@
 			_dnd.targetId = targetEl.id;
 			_dnd.targetNode = getNode(_nodes, _dnd.targetId);
 
-			log('source:' + (_dnd.sourceNode && _dnd.sourceNode.text ? _dnd.sourceNode.text : _dnd.sourceId));
-			log('target:' + (_dnd.targetNode && _dnd.targetNode.text ? _dnd.targetNode.text : _dnd.targetId));
+			log('source:' + (_dnd.sourceNode && _dnd.sourceNode.label ? _dnd.sourceNode.label : _dnd.sourceId));
+			log('target:' + (_dnd.targetNode && _dnd.targetNode.label ? _dnd.targetNode.label : _dnd.targetId));
 			log('isAncester:' + isAncester(_dnd.sourceNode, _dnd.targetId));
 
 			var $target = $('#' + _dnd.targetId);
@@ -408,12 +408,12 @@
 			}
 
 			if (_dnd.targetNode && _dnd.sourceNode && canDrop) { // internal drop
-				if (!_dnd.targetNode.children) {
-					_dnd.targetNode.children = [];
+				if (!_dnd.targetNode.items) {
+					_dnd.targetNode.items = [];
 				}
 
 				removeNode(_nodes, _dnd.sourceId);
-				_dnd.targetNode.children.push(_dnd.sourceNode);
+				_dnd.targetNode.items.push(_dnd.sourceNode);
 			}
 
 			if (canDrop) {
@@ -482,13 +482,13 @@
 			var i = 0;
 			for (i = 0; i < nodes.length; i++) {
 				var n = nodes[i];
-				var t = n.text;
+				var t = n.label;
 				if (n.id == id) {
 					return n;
 				}
-				var hasChildren = n.children && n.children.length > 0;
+				var hasChildren = n.items && n.items.length > 0;
 				if (hasChildren) {
-					var node = getNode(n.children, id);
+					var node = getNode(n.items, id);
 					if (node) {
 						return node;
 					}
@@ -499,16 +499,16 @@
 		}
 		function isAncester(node, id) {
 			var i = 0;
-			if (!node || !node.children || node.children.length == 0) {
+			if (!node || !node.items || node.items.length == 0) {
 				return false;
 			}
-			for (i = 0; i < node.children.length; i++) {
-				var n = node.children[i];
-				var t = n.text;
+			for (i = 0; i < node.items.length; i++) {
+				var n = node.items[i];
+				var t = n.label;
 				if (n.id == id) {
 					return true;
 				}
-				var hasChildren = n.children && n.children.length > 0;
+				var hasChildren = n.items && n.items.length > 0;
 				if (hasChildren) {
 					var ancester = isAncester(n, id);
 					if (ancester) {  // if true
@@ -523,14 +523,14 @@
 			var i = 0;
 			for (i = 0; i < nodes.length; i++) {
 				var n = nodes[i];
-				var t = n.text;
+				var t = n.label;
 				if (n.id == id) {
 					nodes.splice(i, 1);
 					return;
 				}
-				var hasChildren = n.children && n.children.length > 0;
+				var hasChildren = n.items && n.items.length > 0;
 				if (hasChildren) {
-					removeNode(n.children, id);
+					removeNode(n.items, id);
 				}
 			}
 		}
@@ -538,14 +538,14 @@
 			var i = 0;
 			for (i = 0; i < nodes.length; i++) {
 				var n = nodes[i];
-				var t = n.text;
+				var t = n.label;
 				if (n.id == id) {
 					n.isExpanded = openOrClose == "open";
 					return;
 				}
-				var hasChildren = n.children && n.children.length > 0;
+				var hasChildren = n.items && n.items.length > 0;
 				if (hasChildren) {
-					openCloseNode(n.children, id, openOrClose);
+					openCloseNode(n.items, id, openOrClose);
 				}
 			}
 		}
@@ -555,9 +555,9 @@
 				var n = nodes[i];
 				n.isActive = false;
 				$('#' + n.id).removeClass('easytree-active');
-				var hasChildren = n.children && n.children.length > 0;
+				var hasChildren = n.items && n.items.length > 0;
 				if (hasChildren) {
-					unactivateAll(n.children);
+					unactivateAll(n.items);
 				}
 			}
 		}
@@ -566,9 +566,9 @@
 			for (i = 0; i < nodes.length; i++) {
 				var n = nodes[i];
 				$('#' + n.id).removeClass('easytree-drag-source');
-				var hasChildren = n.children && n.children.length > 0;
+				var hasChildren = n.items && n.items.length > 0;
 				if (hasChildren) {
-					unsourceAll(n.children);
+					unsourceAll(n.items);
 				}
 			}
 		}
@@ -576,8 +576,8 @@
 			var i = 0;
 
 			nodes = nodes.sort(function (n1, n2) {
-				var n1Text = n1.text.toLowerCase();
-				var n2Text = n2.text.toLowerCase();
+				var n1Text = n1.label.toLowerCase();
+				var n2Text = n2.label.toLowerCase();
 				if (!n1Text) { n1Text = "a"; } // take into account empty text, so it is below folders
 				if (!n2Text) { n2Text = "a"; }
 
@@ -599,9 +599,9 @@
 
 			for (i = 0; i < nodes.length; i++) {
 				var n = nodes[i];
-				var hasChildren = n.children && n.children.length > 0;
+				var hasChildren = n.items && n.items.length > 0;
 				if (hasChildren) {
-					sort(n.children);
+					sort(n.items);
 				}
 			}
 
@@ -619,9 +619,9 @@
 				if (!n.id) { // if no id so generate one //  || n.id.indexOf('_st_node_') == 0
 					n.id = id + i.toString();
 				}
-				var hasChildren = n.children && n.children.length > 0;
+				var hasChildren = n.items && n.items.length > 0;
 				if (hasChildren) {
-					giveUniqueIds(n.children, level + 1, id + i + "_");
+					giveUniqueIds(n.items, level + 1, id + i + "_");
 				}
 			}
 		}
@@ -734,8 +734,8 @@
 
 				html += '</span>'; // end wrapper span
 
-				if (n.children && n.children.length > 0) { // if has children
-					html += getNodesAsHtml(n.children, level + 1, n.isExpanded);
+				if (n.items && n.items.length > 0) { // if has children
+					html += getNodesAsHtml(n.items, level + 1, n.isExpanded);
 				}
 
 				html += '</li>';
@@ -746,7 +746,7 @@
 			return html;
 		}
 		function getSpanCss(node, lastSibling) {
-			var hasChildren = node.children && node.children.length > 0;
+			var hasChildren = node.items && node.items.length > 0;
 			var spanCss = "easytree-node ";
 			if (_settings.enableDnd) {
 				spanCss += " easytree-draggable ";
@@ -776,7 +776,7 @@
 			return spanCss;
 		}
 		function getExpCss(node, lastSibling) {
-			var hasChildren = node.children && node.children.length > 0;
+			var hasChildren = node.items && node.items.length > 0;
 			var exp = "";
 			if (!hasChildren && node.isLazy) {
 				exp = "c";
@@ -822,15 +822,15 @@
 
 			html += '<span ' + tooltip + ' class="' + titleCss + '">';
 
-			if (node.href) {
-				html += '<a href="' + node.href + '" ';
+			if (node.url) {
+				html += '<a href="' + node.url + '" ';
 				if (node.hrefTarget) {
 					html += ' target="' + node.hrefTarget + '" ';
 				}
 				html += '>';
 			}
-			html += node.text;
-			if (node.href) {
+			html += node.label;
+			if (node.url) {
 				html += '</a>';
 			}
 			html += '</span>';
@@ -992,7 +992,7 @@
 
 			var $a = $el.children('a');
 			if ($a) {
-				node.href = $a.attr('href');
+				node.url = $a.attr('href');
 				node.hrefTarget = $a.attr('target');
 			}
 
@@ -1015,12 +1015,12 @@
 				node.textCss += $span.attr('class') + ' ';
 			}
 
-			node.text = getNodeValue($el[0]);//$.trim($el.first().text());
+			node.label = getNodeValue($el[0]);//$.trim($el.first().label());
 			node.tooltip = $el.attr('title');
 
-			node.children = [];
+			node.items = [];
 			var $li = $el.children('ul').children('li').each(function (index) {
-				node.children.push(convertHtmlToNode(this));
+				node.items.push(convertHtmlToNode(this));
 			});
 
 			return node;

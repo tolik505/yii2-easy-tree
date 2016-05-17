@@ -1,8 +1,8 @@
 {
     "name": "tolik505/yii2-easy-tree",
-    "description": "Widget for menu displaying in tree format",
+    "description": "Widget for menu displaying in tree format. Based on http://www.easyjstree.com. Optimized for yii bootstrap Nav",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension","tree","menu-tree"],
+    "keywords": ["yii2","extension","tree","menu-tree","easy-tree"],
     "license": "MIT",
     "authors": [
         {
