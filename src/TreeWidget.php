@@ -7,6 +7,7 @@ use Yii;
 use yii\base\Widget;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\Url;
 
 /**
  * Class TreeWidget
@@ -80,6 +81,9 @@ class TreeWidget extends Widget
         $items = $this->items;
         $u = null;
         $markAsFolder = function(&$item, $key, $u) {
+            if (isset($item['url']) && is_array($item['url'])) {
+                $item['url'] = Url::to($item['url']);
+            }
             if (empty($item['url']) && is_array($item)) {
                 if (isset($item['label'])) {
                     $item['isFolder'] = true;
